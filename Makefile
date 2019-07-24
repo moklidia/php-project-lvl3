@@ -8,7 +8,7 @@ lint-fix:
 	composer run-script phpcbf -- --standard=PSR12 app/Http/Controllers database tests
 
 test:
-	composer run-script phpunit tests
+	composer run-script phpunit
 
 run:
 	php -S localhost:8000 -t public
