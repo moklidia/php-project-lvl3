@@ -2,10 +2,10 @@ install:
 	composer install
 
 lint:
-	composer run-script phpcs -- --standard=PSR12 app/Http/Controllers database
+	composer run-script phpcs -- --standard=PSR12 app
 
 lint-fix:
-	composer run-script phpcbf -- --standard=PSR12 app/Http/Controllers database
+	composer run-script phpcbf -- --standard=PSR12 app
 
 test:
 	composer run-script phpunit tests
