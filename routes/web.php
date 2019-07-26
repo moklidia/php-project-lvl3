@@ -11,10 +11,7 @@
 |
  */
 
-$router->get('/', 'HomeController@index');
-$router->get('/domains', 'DomainController@index');
+$router->get('/', ['as' => 'home', 'uses' => 'HomeController@index']);
+$router->get('/domains', ['as' => 'domains', 'uses' => 'DomainController@index']);
 $router->post('/domains', 'DomainController@store');
-$router->get('/domains/{id}', [
-	'as' => 'domain',
-	'uses' => 'DomainController@show'
-]);
+$router->get('/domains/{id}', ['as' => 'domain', 'uses' => 'DomainController@show']);

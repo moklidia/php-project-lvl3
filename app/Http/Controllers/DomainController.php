@@ -26,7 +26,6 @@ class DomainController extends Controller
     public function show($id)
     {
         $domain = Domain::findOrFail($id);
-        // $domain = Domain::where('id', $id);
         return view('domains.show', [
             'domain' => $domain
         ]);
