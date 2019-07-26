@@ -5,31 +5,35 @@ use Illuminate\Http\Request;
 use App\Domain;
 use View;
 
-class DomainController extends Controller {
-	/**
-	 * Create a new controller instance.
-	 *
-	 * @return void
-	 */
-	public function __construct() {
+class DomainController extends Controller
+{
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+    }
+    public function index()
+    {
+        $domains = Domain::all();
+        return view('domains.index', [
+            'domains' => $domains,
+        ]);
+    }
 
-	}
-	public function index() {
-		$domains = Domain::all();
-		return view('domains.index', [
-			'domains' => $domains,
-		]);
-	}
-
-	public function show($id) {
+    public function show($id)
+    {
         $domain = Domain::findOrFail($id);
-		// $domain = Domain::where('id', $id);
-		return view('domains.show', [
+        // $domain = Domain::where('id', $id);
+        return view('domains.show', [
             'domain' => $domain
         ]);
-	}
+    }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $domain = Domain::create([
             'name' => $request->input('name')
         ]);
