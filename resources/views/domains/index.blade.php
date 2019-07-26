@@ -8,8 +8,10 @@ Domain
 
 @foreach($domains as $domain)
 <ul>
-	<li>{{ $domain->name }}</li>
+	<li><a href="{{ route('domain', ['id' => $domain->id]) }}">{{ $domain->name }}</a></li>
 </ul>
 @endforeach
+
+{{ $domains->links() }}
 
 @endsection

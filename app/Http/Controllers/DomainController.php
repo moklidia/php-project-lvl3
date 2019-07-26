@@ -12,12 +12,10 @@ class DomainController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-    }
+
     public function index()
     {
-        $domains = Domain::all();
+        $domains = Domain::paginate(10);
         return view('domains.index', [
             'domains' => $domains,
         ]);
@@ -25,7 +23,7 @@ class DomainController extends Controller
 
     public function show($id)
     {
-        $domain = Domain::findOrFail($id);
+        $domain = Domain::find($id);
         return view('domains.show', [
             'domain' => $domain
         ]);
