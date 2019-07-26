@@ -11,7 +11,10 @@
 |
  */
 
-$router->get('/', function () use ($router) {
-	return $router->app->version();
-});
 $router->get('/', 'HomeController@index');
+$router->get('/domains', 'DomainController@index');
+$router->post('/domains', 'DomainController@store');
+$router->get('/domains/{id}', [
+	'as' => 'domain',
+	'uses' => 'DomainController@show'
+]);
