@@ -5,3 +5,5 @@ Homestead.yaml
 .env
 .phpintel
 **/.DS_Store
+/database/database.sqlite
+.phpintel
