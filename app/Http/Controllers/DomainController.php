@@ -4,12 +4,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DiDom\Document;
 use DiDom\Query;
+use GuzzleHttp;
 use App\Domain;
 use View;
 
 class DomainController extends Controller
 {
-   
+   private $client;
+
+    public function __construct(GuzzleHttp\Client $client)
+    {
+        $this->client = $client;
+    }
     public function index()
     {
         $domains = Domain::paginate(10);
@@ -28,9 +34,8 @@ class DomainController extends Controller
 
     public function store(Request $request)
     {
-        $client = app('Client');
         $url = $request->input('name');
-        $response = $client->request('GET', $url);
+        $response = $this->client->request('GET', $url);
         $document = new Document($url, true);
         $domain = Domain::create([
             'name' => $url,
