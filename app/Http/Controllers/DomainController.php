@@ -3,18 +3,19 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DiDom\Document;
+use GuzzleHttp\Client as GuzzleClient;
 use DiDom\Query;
-use GuzzleHttp;
 use App\Domain;
 use View;
 
 class DomainController extends Controller
 {
-   private $client;
+    private $client;
 
-    public function __construct(GuzzleHttp\Client $client)
+    public function __construct(GuzzleClient $client, Document $document)
     {
         $this->client = $client;
+        $this->document = $document;
     }
     public function index()
     {
@@ -36,11 +37,12 @@ class DomainController extends Controller
     {
         $url = $request->input('name');
         $response = $this->client->request('GET', $url);
-        $document = new Document($url, true);
+        $document = $this->document->loadHtmlFile($url);
         $domain = Domain::create([
             'name' => $url,
             'statusCode' => $response->getStatusCode(),
-            'contentLength' => isset($response->getHeader('Content-Length')[0]) ? : 'unknown',
+            'contentLength' => isset($response->getHeader('Content-Length')[0]) ?
+                               $response->getHeader('Content-Length')[0] : 'unknown',
             'body' => $response->getBody()->getContents(),
             'h1' => $document->has('h1') ? $document->first('h1')->text() : 'no h1',
             'keywords' => $document->has('meta[name=keywords]') ?
@@ -48,6 +50,7 @@ class DomainController extends Controller
             'description' => $document->has('meta[name=description]') ?
                              $document->find('meta[name=description]')[0]->attr('content') : 'no description'
         ]);
+        var_dump($domain);
         return redirect()->route('domain', ['id' => $domain->id]);
     }
 }
