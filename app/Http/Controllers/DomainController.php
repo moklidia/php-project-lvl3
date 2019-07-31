@@ -1,22 +1,23 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
+use Illuminate\Bus\Dispatcher;
+use \App\Jobs\SendRequestToDomainJob;
 use DiDom\Document;
 use GuzzleHttp\Client as GuzzleClient;
-use DiDom\Query;
 use App\Domain;
 use View;
 
 class DomainController extends Controller
 {
-    private $client;
+    // protected $domains;
 
-    public function __construct(GuzzleClient $client, Document $document)
-    {
-        $this->client = $client;
-        $this->document = $document;
-    }
+    // public function __construct(Domain $domains)
+    // {
+    //     $this->domains = $domains;
+    // }
     public function index()
     {
         $domains = Domain::paginate(10);
@@ -36,21 +37,8 @@ class DomainController extends Controller
     public function store(Request $request)
     {
         $url = $request->input('name');
-        $response = $this->client->request('GET', $url);
-        $document = $this->document->loadHtmlFile($url);
-        $domain = Domain::create([
-            'name' => $url,
-            'statusCode' => $response->getStatusCode(),
-            'contentLength' => isset($response->getHeader('Content-Length')[0]) ?
-                               $response->getHeader('Content-Length')[0] : 'unknown',
-            'body' => $response->getBody()->getContents(),
-            'h1' => $document->has('h1') ? $document->first('h1')->text() : 'no h1',
-            'keywords' => $document->has('meta[name=keywords]') ?
-                          $document->find('meta[name=keywords]')[0]->attr('content') : 'no keywords',
-            'description' => $document->has('meta[name=description]') ?
-                             $document->find('meta[name=description]')[0]->attr('content') : 'no description'
-        ]);
-        var_dump($domain);
-        return redirect()->route('domain', ['id' => $domain->id]);
+        dispatch(new SendRequestToDomainJob($url));
+        // return redirect()->route('domain', ['id' => $domain->id]);
+        return redirect()->route('domains');
     }
 }

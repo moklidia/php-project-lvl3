@@ -80,6 +80,11 @@ $app->singleton(
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
+if (app()->environment('testing')) {
+    app()->register(App\Providers\FakerClientServiceProvider::class);
+} else {
+    app()->register(App\Providers\ClientServiceProvider::class);
+}
 
 if (env('APP_DEBUG')) {
 	$app->configure('app');
