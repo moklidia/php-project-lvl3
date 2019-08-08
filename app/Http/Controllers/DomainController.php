@@ -12,12 +12,7 @@ use View;
 
 class DomainController extends Controller
 {
-    // protected $domains;
 
-    // public function __construct(Domain $domains)
-    // {
-    //     $this->domains = $domains;
-    // }
     public function index()
     {
         $domains = Domain::paginate(10);
@@ -38,7 +33,8 @@ class DomainController extends Controller
     {
         $url = $request->input('name');
         dispatch(new SendRequestToDomainJob($url));
-        // return redirect()->route('domain', ['id' => $domain->id]);
-        return redirect()->route('domains');
+        sleep(5);
+        $domain = Domain::where('name', $url)->firstOrFail();
+        return redirect()->route('domain', ['id' => $domain->id]);
     }
 }

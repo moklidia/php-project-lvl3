@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-// use GuzzleHttp\Client;
 use DiDom\Document;
 use App\Domain;
 

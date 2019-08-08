@@ -7,7 +7,7 @@ use App\Domain;
 
 class ParseHtmlJob extends Job
 {
-    protected $domainData;
+    protected $data;
     /**
      * Create a new job instance.
      *
@@ -15,7 +15,7 @@ class ParseHtmlJob extends Job
      */
     public function __construct($domainData)
     {
-        $this->domainData = $domainData;
+        $this->data = $domainData;
     }
 
     /**
@@ -25,17 +25,13 @@ class ParseHtmlJob extends Job
      */
     public function handle()
     {
-        $document = new Document($this->domainData['name'], true);
-        $domain = Domain::create([
-            'name' => $this->domainData['name'],
-            'statusCode' => $this->domainData['statusCode'],
-            'contentLength' => $this->domainData['contentLength'],
-            'body' => $this->domainData['body'],
-            'h1' => $document->has('h1') ? $document->first('h1')->text() : 'no h1',
-            'keywords' => $document->has('meta[name=keywords]') ?
-                          $document->find('meta[name=keywords]')[0]->attr('content') : 'no keywords',
-            'description' => $document->has('meta[name=description]') ?
-                             $document->find('meta[name=description]')[0]->attr('content') : 'no description'
-                         ]);
+        $document = new Document($this->data['name'], true);
+        $this->data['h1'] = $document->has('h1') ? $document->first('h1')->text() : 'no h1';
+        $this->data['keywords'] = $document->has('meta[name=keywords]') ?
+               $document->find('meta[name=keywords]')[0]->attr('content') : 'no keywords';
+        $this->data['description'] = $document->has('meta[name=description]') ?
+               $document->find('meta[name=description]')[0]->attr('content') : 'no description';
+
+        dispatch(new CreateDomainJob($this->data));
     }
 }

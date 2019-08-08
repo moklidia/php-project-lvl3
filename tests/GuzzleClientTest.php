@@ -6,14 +6,13 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use GuzzleHttp\Psr7\Response;
 use App\Http\Controllers\DomainController;
+use App\Domain;
 
 class GuzzleClientTest extends TestCase
 {
 
 	public function testDomainsClient()
-	{
-		// dd(app('GuzzleClient'));
-		
+	{	
 		$body = file_get_contents(__DIR__ . '/fixtures/test.html');
 		$mock = new MockHandler([
             new Response(200, ['Content-Length' => 15], $body)
