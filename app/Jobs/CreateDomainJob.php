@@ -4,15 +4,17 @@ namespace App\Jobs;
 
 class CreateDomainJob extends Job
 {
-    private $data;
+    private $domainData;
+    private $state;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($data)
+    public function __construct($domainData, $state)
     {
-        $this->data = $data;
+        $this->domainData = $domainData;
+        $this->state = $state;
     }
 
     /**
@@ -23,14 +25,14 @@ class CreateDomainJob extends Job
     public function handle()
     {
         $domain = \App\Domain::create([
-            'name' => $this->data['name'],
-            'statusCode' => $this->data['statusCode'],
-            'contentLength' => $this->data['contentLength'],
-            'body' => $this->data['body'],
-            'h1' => $this->data['h1'],
-            'keywords' => $this->data['keywords'],
-            'description' => $this->data['description']
+            'name' => $this->domainData['name'],
+            'statusCode' => $this->domainData['statusCode'],
+            'contentLength' => $this->domainData['contentLength'],
+            'body' => $this->domainData['body'],
+            'h1' => $this->domainData['h1'],
+            'keywords' => $this->domainData['keywords'],
+            'description' => $this->domainData['description']
         ]);
-        return $domain;
+        $this->state->approve();
     }
 }

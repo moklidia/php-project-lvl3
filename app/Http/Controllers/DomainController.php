@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Bus\Dispatcher;
 use \App\Jobs\SendRequestToDomainJob;
+
+use App\DomainState;
 use App\Domain;
 use View;
 
@@ -30,9 +32,12 @@ class DomainController extends Controller
     public function store(Request $request)
     {
         $url = $request->input('name');
-        dispatch(new SendRequestToDomainJob($url));
-        sleep(5);
-        $domain = Domain::where('name', $url)->firstOrFail();
-        return redirect()->route('domain', ['id' => $domain->id]);
+        $state = new DomainState();
+        dispatch(new SendRequestToDomainJob($url, $state));
+        if ($state->getState() === 'approved') {
+            $domain = Domain::where('name', $url)->firstOrFail();
+            return redirect()->route('domain', ['id' => $domain->id]);
+        }
+        return redirect()->route('home');
     }
 }
