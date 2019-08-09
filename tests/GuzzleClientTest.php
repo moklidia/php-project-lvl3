@@ -11,10 +11,10 @@ use App\Domain;
 class GuzzleClientTest extends TestCase
 {
 
-	public function testDomainsClient()
-	{	
-		$body = file_get_contents(__DIR__ . '/fixtures/test.html');
-		$mock = new MockHandler([
+    public function testDomainsClient()
+    {
+        $body = file_get_contents(__DIR__ . '/fixtures/test.html');
+        $mock = new MockHandler([
             new Response(200, ['Content-Length' => 15], $body)
         ]);
         $handler = HandlerStack::create($mock);
@@ -23,11 +23,11 @@ class GuzzleClientTest extends TestCase
         $request->merge(['name' => __DIR__ . '/fixtures/test.html']);
         $controller->store($request);
         $this->seeInDatabase('domains', [
-        	'name' => __DIR__ . '/fixtures/test.html',
-        	'contentLength' => "15",
-        	'body' => $body,
-        	'h1' => 'Heading',
-        	'description' => 'A simple html page to test app API'
+            'name' => __DIR__ . '/fixtures/test.html',
+            'contentLength' => "15",
+            'body' => $body,
+            'h1' => 'Heading',
+            'description' => 'A simple html page to test app API'
         ]);
-	}
+    }
 }
