@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Bus\Dispatcher;
 use \App\Jobs\SendRequestToDomainJob;
-use DiDom\Document;
-use GuzzleHttp\Client as GuzzleClient;
 use App\Domain;
 use View;
 
