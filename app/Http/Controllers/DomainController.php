@@ -31,10 +31,14 @@ class DomainController extends Controller
     public function store(Request $request)
     {
         $url = $request->input('name');
-        $state = new DomainState();
-        dispatch(new SendRequestToDomainJob($url, $state));
-        if ($state->getState() === 'approved') {
-            $domain = Domain::where('name', $url)->firstOrFail();
+        $domain = Domain::create([
+            'name' => $url,
+            'state' => 'draft'
+        ]);
+        dispatch(new SendRequestToDomainJob($domain));
+        sleep(5);
+        dd($domain->getState());
+        if ($domain->getState() === 'approved') {
             return redirect()->route('domain', ['id' => $domain->id]);
         }
         return redirect()->route('home');

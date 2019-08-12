@@ -7,18 +7,16 @@ use App\Domain;
 
 class SendRequestToDomainJob extends Job
 {
-    private $path;
-    private $state;
+    private $domain;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($url, $state)
+    public function __construct($domain)
     {
-        $this->path = $url;
-        $this->state = $state;
+        $this->domain = $domain;
     }
 
     /**
@@ -28,16 +26,15 @@ class SendRequestToDomainJob extends Job
      */
     public function handle()
     {
-        $this->state->process();
         $client = app('GuzzleClient');
-        $response = $client->request('GET', $this->path);
-        $domainData = [
-            'name' => $this->path,
-            'statusCode' => $response->getStatusCode(),
-            'contentLength' => isset($response->getHeader('Content-Length')[0]) ?
-                               $response->getHeader('Content-Length')[0] : 'unknown',
-            'body' => $response->getBody()->getContents()
-        ];
-        dispatch(new ParseHtmlJob($domainData, $this->state));
+        $response = $client->request('GET', $this->domain->name);
+        $this->domain->statusCode = $response->getStatusCode();
+        $this->domain->contentLength = isset($response->getHeader('Content-Length')[0]) ?
+                                 $response->getHeader('Content-Length')[0] : 'unknown';
+        $this->domain->body = $response->getBody()->getContents();
+ 
+        $this->domain->request();
+        
+        dispatch(new ParseHtmlJob($this->domain));
     }
 }
