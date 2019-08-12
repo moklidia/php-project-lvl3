@@ -11,5 +11,22 @@ class Domain extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'statusCode', 'contentLength', 'body', 'h1', 'keywords', 'description'];
+    protected $fillable = ['name', 'state', 'statusCode', 'contentLength', 'body', 'h1', 'keywords', 'description'];
+    public function construct($state = 'draft')
+    {
+        $this->state = $state;
+    }
+    public function request()
+    {
+        return $this->state = 'requested';
+    }
+ 
+    public function approve()
+    {
+        return $this->state = 'approved';
+    }
+    public function getState()
+    {
+        return $this->state;
+    }
 }
