@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests;
+
 class DomainControllerTest extends TestCase
 {
     
