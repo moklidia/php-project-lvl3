@@ -36,11 +36,6 @@ class DomainController extends Controller
             'state' => 'draft'
         ]);
         dispatch(new SendRequestToDomainJob($domain));
-        sleep(5);
-        dd($domain->getState());
-        if ($domain->getState() === 'approved') {
-            return redirect()->route('domain', ['id' => $domain->id]);
-        }
-        return redirect()->route('home');
+        return redirect()->route('domain', ['id' => $domain->id]);
     }
 }
