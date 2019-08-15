@@ -33,5 +33,6 @@ class ParseHtmlJob extends Job
                                      $document->find('meta[name=description]')[0]->attr('content') : 'no description';
         
         $this->domain->approve();
+        $this->domain->save();
     }
 }
