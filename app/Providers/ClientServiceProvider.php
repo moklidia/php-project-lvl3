@@ -15,7 +15,7 @@ class ClientServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind('GuzzleClient', function ($app) {
-            return new Client();
+            return new Client(['http_errors' => false]);
         });
     }
 }
