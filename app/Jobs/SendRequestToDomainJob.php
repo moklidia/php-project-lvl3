@@ -28,13 +28,16 @@ class SendRequestToDomainJob extends Job
     {
         $client = app('GuzzleClient');
         $response = $client->request('GET', $this->domain->name);
-        $this->domain->statusCode = $response->getStatusCode();
-        $this->domain->contentLength = isset($response->getHeader('Content-Length')[0]) ?
-                                 $response->getHeader('Content-Length')[0] : 'unknown';
-        $this->domain->body = $response->getBody()->getContents();
- 
-        $this->domain->request();
-        
-        dispatch(new ParseHtmlJob($this->domain));
+        if ($response->getStatusCode() === 404) {
+            $this->domain->statusCode = $response->getStatusCode();
+            $this->domain->reject();
+            $this->domain->save();
+        }
+        else {
+            $this->domain->statusCode = $response->getStatusCode();
+            $this->domain->contentLength = isset($response->getHeader('Content-Length')[0]) ? $response->getHeader('Content-Length')[0] : 'unknown';
+            $this->domain->body = $response->getBody()->getContents();
+            dispatch(new ParseHtmlJob($this->domain));
+        }
     }
 }

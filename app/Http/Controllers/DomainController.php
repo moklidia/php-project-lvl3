@@ -24,9 +24,11 @@ class DomainController extends Controller
     public function show($id)
     {
         $domain = Domain::find($id);
-        return view('domains.show', [
-            'domain' => $domain
-        ]);
+        $errors = [];
+        if ($domain->getState() === 'rejected') {
+            $errors['message'] = "The page you requested wasn't found";
+        }
+        return view('domains.show', ['domain' => $domain, 'errors' => $errors]);
     }
 
     public function store(Request $request)
