@@ -16,15 +16,17 @@ class Domain extends Model
     {
         $this->state = $state;
     }
-    public function request()
-    {
-        return $this->state = 'requested';
-    }
  
     public function approve()
     {
         return $this->state = 'approved';
     }
+
+    public function reject()
+    {
+        return $this->state = 'rejected';
+    }
+
     public function getState()
     {
         return $this->state;
