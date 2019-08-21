@@ -4,6 +4,8 @@ namespace Tests;
 
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
+use App\Http\Controllers\DomainController;
+use Illuminate\Http\Request;
 use App\Domain;
 
 class DomainControllerTest extends TestCase
@@ -27,9 +29,14 @@ class DomainControllerTest extends TestCase
 
     public function testDomainStore()
     {
-        $url = 'https://www.facebook.com';
-        $this->post('domains', ['name' => $url]);
-        $this->SeeInDatabase('domains', ['name' => $url]);
+        $path = __DIR__ . '/fixtures/test.html';
+        $this->post('domains', ['name' => $path]);
+        $this->seeInDatabase('domains', [
+            'name' => $path,
+            'contentLength' => "15",
+            'h1' => 'Heading',
+            'description' => 'A simple html page to test app API'
+        ]);
         $this->assertResponseStatus(302);
     }
 }
