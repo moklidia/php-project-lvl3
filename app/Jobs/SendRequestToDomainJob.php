@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use DiDom\Document;
 use App\Domain;
+use GuzzleHttp\Client;
 
 class SendRequestToDomainJob extends Job
 {
@@ -24,9 +25,8 @@ class SendRequestToDomainJob extends Job
      *
      * @return void
      */
-    public function handle()
+    public function handle(Client $client)
     {
-        $client = app('GuzzleClient');
         $response = $client->request('GET', $this->domain->name);
         if ($response->getStatusCode() === 404) {
             $this->domain->statusCode = $response->getStatusCode();
@@ -37,6 +37,7 @@ class SendRequestToDomainJob extends Job
             $this->domain->contentLength = isset($response->getHeader('Content-Length')[0]) ?
                                            $response->getHeader('Content-Length')[0] : 'unknown';
             $this->domain->body = $response->getBody()->getContents();
+            $this->domain->save();
             dispatch(new ParseHtmlJob($this->domain));
         }
     }

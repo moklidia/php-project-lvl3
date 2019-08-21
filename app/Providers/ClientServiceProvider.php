@@ -23,11 +23,11 @@ class ClientServiceProvider extends ServiceProvider
                 new Response(200, ['Content-Length' => 15], $body)
             ]);
             $handler = HandlerStack::create($mock);
-            $this->app->bind('GuzzleClient', function ($app) use ($handler) {
+            $this->app->bind('GuzzleHttp\Client', function ($app) use ($handler) {
                 return new Client(['handler' => $handler]);
             });
         } else {
-            $this->app->bind('GuzzleClient', function ($app) {
+            $this->app->bind('GuzzleHttp\Client', function ($app) {
                 return new Client(['http_errors' => false]);
           });
         }
