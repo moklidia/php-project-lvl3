@@ -24,7 +24,6 @@ class DomainControllerTest extends TestCase
         $domain->save();
         $this->get('/domains/' . $domain->id);
         $this->assertResponseStatus(200);
-
     }
 
     public function testDomainStore()

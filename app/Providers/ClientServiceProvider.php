@@ -29,7 +29,7 @@ class ClientServiceProvider extends ServiceProvider
         } else {
             $this->app->bind('GuzzleHttp\Client', function ($app) {
                 return new Client(['http_errors' => false]);
-          });
+            });
         }
     }
 }
