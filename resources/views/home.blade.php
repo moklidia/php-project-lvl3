@@ -6,7 +6,7 @@ Page Analyzer
 
 @section('content')
 <div class="jumbotron">
-  <form action="/domains" method="post">
+  <form action="domains" method="post">
     <label>Enter a domain</label>
     <input type="domain", name="name">
     <button type="submit" class="btn btn-primary">Submit</button>
