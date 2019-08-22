@@ -26,7 +26,7 @@ class DomainController extends Controller
         $domain = Domain::find($id);
         $errors = [];
         if ($domain->getState() === 'rejected') {
-            $errors['message'] = "The page you requested wasn't found";
+            $errors['message'] = "The requested domain returned the 404 error";
         }
         return view('domains.show', ['domain' => $domain, 'errors' => $errors]);
     }
