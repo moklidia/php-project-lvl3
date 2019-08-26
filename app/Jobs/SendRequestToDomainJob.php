@@ -27,7 +27,7 @@ class SendRequestToDomainJob extends Job
      */
     public function handle(Client $client)
     {
-        $response = $client->request('GET', $this->domain->name);
+        $response = $client->get($this->domain->name);
         if ($response->getStatusCode() === 404) {
             $this->domain->statusCode = $response->getStatusCode();
             $this->domain->reject();
@@ -37,8 +37,20 @@ class SendRequestToDomainJob extends Job
             $this->domain->contentLength = isset($response->getHeader('Content-Length')[0]) ?
                                            $response->getHeader('Content-Length')[0] : 'unknown';
             $this->domain->body = $response->getBody()->getContents();
-            $this->domain->save();
-            dispatch(new ParseHtmlJob($this->domain));
+            return $this->parse();
         }
+    }
+
+    public function parse()
+    {
+        $document = new Document($this->domain['name'], true);
+        $this->domain->h1 = $document->has('h1') ? $document->first('h1')->text() : 'no h1';
+        $this->domain->keywords = $document->has('meta[name=keywords]') ?
+                                  $document->find('meta[name=keywords]')[0]->attr('content') : 'no keywords';
+        $this->domain->description = $document->has('meta[name=description]') ?
+                                     $document->find('meta[name=description]')[0]->attr('content') : 'no description';
+        
+        $this->domain->approve();
+        $this->domain->save();
     }
 }
