@@ -33,24 +33,24 @@ class SendRequestToDomainJob extends Job
             $this->domain->reject();
             $this->domain->save();
         } else {
+            $document = $this->parse();
             $this->domain->statusCode = $response->getStatusCode();
             $this->domain->contentLength = isset($response->getHeader('Content-Length')[0]) ?
                                            $response->getHeader('Content-Length')[0] : 'unknown';
             $this->domain->body = $response->getBody()->getContents();
-            return $this->parse();
+            $this->domain->h1 = $document->has('h1') ? $document->first('h1')->text() : 'no h1';
+            $this->domain->keywords = $document->has('meta[name=keywords]') ?
+                                  $document->find('meta[name=keywords]')[0]->attr('content') : 'no keywords';
+            $this->domain->description = $document->has('meta[name=description]') ?
+                                     $document->find('meta[name=description]')[0]->attr('content') : 'no description';
+        
+            $this->domain->approve();
+            $this->domain->save();
         }
     }
 
     public function parse()
     {
-        $document = new Document($this->domain['name'], true);
-        $this->domain->h1 = $document->has('h1') ? $document->first('h1')->text() : 'no h1';
-        $this->domain->keywords = $document->has('meta[name=keywords]') ?
-                                  $document->find('meta[name=keywords]')[0]->attr('content') : 'no keywords';
-        $this->domain->description = $document->has('meta[name=description]') ?
-                                     $document->find('meta[name=description]')[0]->attr('content') : 'no description';
-        
-        $this->domain->approve();
-        $this->domain->save();
+        return new Document($this->domain['name'], true);
     }
 }
